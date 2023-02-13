@@ -48,25 +48,40 @@ namespace Platformer.Gameplay
             }
             else
             {
-                //Schedule<PlayerDeath>();
-                playerHealth.Decrement();
-                rb = player.GetComponent<Rigidbody2D>();
-                player.move.x = 0;
+
+                playerHealth.PlayerDecrement();
                 player.controlEnabled = false;
-                if (player.dir == 1)
+                player.move.x = 0;
+                player.animator.SetTrigger("hurtflip");
+                //player.GetComponent<SpriteRenderer>().flipX = true;
+                if (player.health.IsAlive)
                 {
 
-                    //player.Bounce(7);
-                    player.Bounce(new Vector2(-1, 5));
-                    //player.Bounce(7);
-                    Simulation.Schedule<EnablePlayerInput>(2f);
-                    Debug.Log("bounce left");
+                    if (player.dir == 1)
+                    {
+
+                        //player.Bounce(7);
+                        player.Bounce(new Vector2(-1, 3));
+                        player.move.x = -0.25f;
+                        //player.Bounce(7);
+                        Simulation.Schedule<EnablePlayerInput>(1f);
+                        Debug.Log("bounce left");
+                    }
+                    else
+                    {
+                        //player.Bounce(7);
+                        player.Bounce(new Vector2(1, 3));
+                        player.move.x = 0.25f;
+                        //player.Bounce(7);
+                        Simulation.Schedule<EnablePlayerInput>(1f);
+                        Debug.Log("bounce right");
+                    }
                 }
-                else
-                {
-                    player.Bounce(7);
-                    Simulation.Schedule<EnablePlayerInput>(2f);
-                }
+                //else
+                //{
+                //    Schedule<PlayerDeath>();
+                //}
+
             }
         }
     }

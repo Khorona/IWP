@@ -16,22 +16,22 @@ namespace Platformer.Gameplay
 
         public override void Execute()
         {
-            Debug.Log("Die og");
+  
             var player = model.player;
-            if (player.health.IsAlive)
+            if (!player.health.IsAlive)
             {
                 player.health.Die();
                 model.virtualCamera.m_Follow = null;
                 model.virtualCamera.m_LookAt = null;
-                // player.collider.enabled = false;
+                //player.collider2d.enabled = false;
                 player.controlEnabled = false;
-
+                player.move.x = 0;
+                Debug.Log("Die og");
                 if (player.audioSource && player.ouchAudio)
                     player.audioSource.PlayOneShot(player.ouchAudio);
-                player.animator.SetTrigger("hurt");
+                player.animator.SetTrigger("hurtflip");
                 player.animator.SetBool("dead", true);
                 Simulation.Schedule<PlayerSpawn>(2);
-                player.health.SpawnBack();
             }
         }
     }

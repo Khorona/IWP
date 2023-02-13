@@ -1,6 +1,8 @@
 using Platformer.Core;
 using Platformer.Mechanics;
 using Platformer.Model;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Platformer.Gameplay
@@ -20,8 +22,12 @@ namespace Platformer.Gameplay
 
         public override void Execute()
         {
-            model.player.animator.SetTrigger("victory");
             model.player.controlEnabled = false;
+            model.player.move.x = 0;
+            model.player.animator.SetTrigger("victory");
+            //EditorApplication.Exit(0);
+            Application.Quit();
+            //SceneManager.LoadScene("Level2");
         }
     }
 }

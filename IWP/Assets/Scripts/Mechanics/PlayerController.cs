@@ -26,6 +26,7 @@ namespace Platformer.Mechanics
         /// Initial jump velocity at the start of a jump.
         /// </summary>
         public float jumpTakeOffSpeed = 7;
+        public float maxJumpSpeed = 7;
 
         public JumpState jumpState = JumpState.Grounded;
         private bool stopJump;
@@ -43,6 +44,8 @@ namespace Platformer.Mechanics
         public Vector2 move;
         SpriteRenderer spriteRenderer;
         internal Animator animator;
+        public Gun gun1;
+        public RPG gun2;
         readonly PlatformerModel model = Simulation.GetModel<PlatformerModel>();
 
         public Bounds Bounds => collider2d.bounds;
@@ -56,30 +59,23 @@ namespace Platformer.Mechanics
             collider2d = GetComponent<Collider2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
-            //gun1 = true;
+            gun1 = GetComponent<Gun>();
+            gun2 = GetComponent<RPG>();
             dir = 1;
+
+            gun1.enabled = false;
+            gun2.enabled = false;
+
         }
 
         protected override void Update()
         {
 
-            if(!health.IsAlive)
-            {
-                Schedule<PlayerDeath>();
-            }
 
             //original
             if (controlEnabled)
             {
                 move.x = Input.GetAxis("Horizontal");
-                //if(move.x > 0 && !m_FacingRight)
-                //{
-                //    Flip();
-                //}
-                //else if (move.x < 0 && m_FacingRight)
-                //{
-                //    Flip();
-                //}
                 if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
                     jumpState = JumpState.PrepareToJump;
                 else if (Input.GetButtonUp("Jump"))
@@ -87,6 +83,12 @@ namespace Platformer.Mechanics
                     stopJump = true;
                     Schedule<PlayerStopJump>().player = this;
                 }
+
+                if(Input.GetKeyDown(KeyCode.Backspace))
+                {
+                    Application.Quit();
+                }
+
             }
             else
             {
@@ -169,11 +171,9 @@ namespace Platformer.Mechanics
             Landed
         }
 
-        //private void Flip()
-        //{
-        //    m_FacingRight = !m_FacingRight;
-
-        //    transform.Rotate(0.0f, 180f, 0f);
-        //}
+        private void Dead()
+        {
+            Schedule<PlayerDeath>();
+        }
     }
 }

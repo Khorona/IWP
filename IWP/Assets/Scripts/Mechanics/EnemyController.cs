@@ -23,6 +23,8 @@ namespace Platformer.Mechanics
 
         public Bounds Bounds => _collider.bounds;
 
+        private bool huntP;
+
         void Awake()
         {
             control = GetComponent<AnimationController>();
@@ -50,10 +52,31 @@ namespace Platformer.Mechanics
 
         void Update()
         {
-            if (path != null)
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            float distance = Vector3.Distance(player.transform.position, transform.position);
+
+            if (distance <= 2)
+            {
+                Debug.Log("Player spotted");
+                huntP = true;
+            }
+            else
+            {
+                huntP = false;
+            }
+
+            if(huntP)
+            {
+                control.move.x = Mathf.Clamp(player.transform.position.x - transform.position.x, -0.3f, 0.3f);
+            }
+            else if (path != null && !huntP)
             {
                 if (mover == null) mover = path.CreateMover(control.maxSpeed * 0.5f);
-                control.move.x = Mathf.Clamp(mover.Position.x - transform.position.x, -1, 1);
+                control.move.x = Mathf.Clamp(mover.Position.x - transform.position.x, -0.5f, 0.5f);
+            }
+            else
+            {
+                control.move.x = 0;
             }
         }
 
